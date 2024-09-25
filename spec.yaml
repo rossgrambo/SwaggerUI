@@ -1,0 +1,2670 @@
+openapi: 3.0.0
+info:
+  title: Azure App Configuration
+  description: Azure App Configuration REST API
+  version: 2023-11-01
+tags: []
+paths:
+  /ff:
+    get:
+      operationId: getFeatureFlags
+      summary: Gets a list of feature flags.
+      description: Gets a list of feature flags.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter used to match flags.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: A filter used to match labels.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeatureFlagFields'
+          style: form
+          explode: false
+        - name: snapshot
+          in: query
+          required: false
+          description: |-
+            A filter used get key-values for a snapshot. The value should be the name of
+            the snapshot. Not valid when used with 'key' and 'label' filters.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - name: tags
+          in: query
+          required: false
+          description: |-
+            A filter used to query by tags. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kvset+json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagListResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagListResult'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkFeatureFlags
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter used to match flags.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: A filter used to match labels.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeatureFlagFields'
+          style: form
+          explode: false
+        - name: snapshot
+          in: query
+          required: false
+          description: A filter used get feature flags for a snapshot. Not valid when used with 'name' and 'label' filters.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - name: tags
+          in: query
+          required: false
+          description: A filter used to query by tags.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /ff/{name}:
+    get:
+      operationId: getFeatureFlag
+      summary: Gets a single feature flag.
+      description: Gets a single feature flag.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the feature flag.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the feature flag to retrieve.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeatureFlagFields'
+          style: form
+          explode: false
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+            x-ms-client-request-id:
+              required: false
+              description: An opaque, globally-unique, client-generated string identifier for the request.
+              schema:
+                $ref: '#/components/schemas/Azure.Core.uuid'
+          content:
+            application/json; profile=https://azconfig.io/mime-profiles/ff​; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: putFeatureFlag
+      summary: Creates a feature flag.
+      description: Creates a feature flag.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the feature flag to create.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the feature flag to create.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/json; profile=https://azconfig.io/mime-profiles/ff​; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: The feature flag to create.
+        required: false
+        content:
+          application/json; profile=https://azconfig.io/mime-profiles/ff​; charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/FeatureFlag'
+    delete:
+      operationId: deleteFeatureFlag
+      summary: Deletes a feature flag.
+      description: Deletes a feature flag.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the feature flag to delete.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the feature flag to delete.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/json; profile=https://azconfig.io/mime-profiles/ff​; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkFeatureFlag
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the feature flag to retrieve.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the feature flag to retrieve.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeatureFlagFields'
+          style: form
+          explode: false
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /keys:
+    get:
+      operationId: getKeys
+      summary: Gets a list of keys.
+      description: Gets a list of keys.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter for the name of the returned keys.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.keyset+json:
+              schema:
+                $ref: '#/components/schemas/KeyListResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyListResult'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkKeys
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter for the name of the returned keys.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv:
+    get:
+      operationId: getKeyValues
+      summary: Gets a list of key-values.
+      description: Gets a list of key-values.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: query
+          required: false
+          description: |-
+            A filter used to match keys. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: |-
+            A filter used to match labels. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyValueFields'
+          style: form
+          explode: false
+        - name: snapshot
+          in: query
+          required: false
+          description: |-
+            A filter used get key-values for a snapshot. The value should be the name of
+            the snapshot. Not valid when used with 'key' and 'label' filters.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - name: tags
+          in: query
+          required: false
+          description: |-
+            A filter used to query by tags. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kvset+json:
+              schema:
+                $ref: '#/components/schemas/KeyValueListResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValueListResult'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkKeyValues
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: query
+          required: false
+          description: |-
+            A filter used to match keys. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: |-
+            A filter used to match labels. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyValueFields'
+          style: form
+          explode: false
+        - name: snapshot
+          in: query
+          required: false
+          description: A filter used get key-values for a snapshot. Not valid when used with 'key' and 'label' filters.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - name: tags
+          in: query
+          required: false
+          description: |-
+            A filter used to query by tags. Syntax reference:
+            https://aka.ms/azconfig/docs/keyvaluefiltering
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /kv/{key}:
+    get:
+      operationId: getKeyValue
+      summary: Gets a single key-value.
+      description: Gets a single key-value.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: path
+          required: true
+          description: The key of the key-value.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the key-value to retrieve.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyValueFields'
+          style: form
+          explode: false
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+            x-ms-client-request-id:
+              required: false
+              description: An opaque, globally-unique, client-generated string identifier for the request.
+              schema:
+                $ref: '#/components/schemas/Azure.Core.uuid'
+          content:
+            application/vnd.microsoft.appconfig.kv+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: putKeyValue
+      summary: Creates a key-value.
+      description: Creates a key-value.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: path
+          required: true
+          description: The key of the key-value to create.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the key-value to create.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kv+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: The key-value to create.
+        required: false
+        content:
+          application/vnd.microsoft.appconfig.kv+json:
+            schema:
+              $ref: '#/components/schemas/KeyValue'
+          application/vnd.microsoft.appconfig.kvset+json:
+            schema:
+              $ref: '#/components/schemas/KeyValue'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyValue'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/KeyValue'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/KeyValue'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/KeyValue'
+    delete:
+      operationId: deleteKeyValue
+      summary: Deletes a key-value.
+      description: Deletes a key-value.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: path
+          required: true
+          description: The key of the key-value to delete.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the key-value to delete.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kv+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkKeyValue
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: path
+          required: true
+          description: The key of the key-value to retrieve.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label of the key-value to retrieve.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyValueFields'
+          style: form
+          explode: false
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /labels:
+    get:
+      operationId: getLabels
+      summary: Gets a list of labels.
+      description: Gets a list of labels.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter for the name of the returned labels.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LabelFields'
+          style: form
+          explode: false
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.labelset+json:
+              schema:
+                $ref: '#/components/schemas/LabelListResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/LabelListResult'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkLabels
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter for the name of the returned labels.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LabelFields'
+          style: form
+          explode: false
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /locks/{key}:
+    put:
+      operationId: putLock
+      summary: Locks a key-value.
+      description: Locks a key-value.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: path
+          required: true
+          description: The key of the key-value to lock.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label, if any, of the key-value to lock.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kv+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteLock
+      summary: Unlocks a key-value.
+      description: Unlocks a key-value.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: path
+          required: true
+          description: The key of the key-value to unlock.
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: The label, if any, of the key-value to unlock.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kv+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValue'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /operations:
+    get:
+      operationId: getOperationDetails
+      summary: Gets the state of a long running operation.
+      description: Gets the state of a long running operation.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: snapshot
+          in: query
+          required: true
+          description: Snapshot identifier for the long running operation.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationDetails'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /revisions:
+    get:
+      operationId: getRevisions
+      summary: Gets a list of key-value revisions.
+      description: Gets a list of key-value revisions.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: query
+          required: false
+          description: |-
+            A filter used to match keys. Syntax reference:
+            https://aka.ms/azconfig/docs/restapirevisions
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: |-
+            A filter used to match labels. Syntax reference:
+            https://aka.ms/azconfig/docs/restapirevisions
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyValueFields'
+          style: form
+          explode: false
+        - name: tags
+          in: query
+          required: false
+          description: |-
+            A filter used to query by tags. Syntax reference:
+            https://aka.ms/azconfig/docs/restapirevisions
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.kvset+json:
+              schema:
+                $ref: '#/components/schemas/KeyValueListResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/KeyValueListResult'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkRevisions
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: key
+          in: query
+          required: false
+          description: |-
+            A filter used to match keys. Syntax reference:
+            https://aka.ms/azconfig/docs/restapirevisions
+          schema:
+            type: string
+        - name: label
+          in: query
+          required: false
+          description: |-
+            A filter used to match labels. Syntax reference:
+            https://aka.ms/azconfig/docs/restapirevisions
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: Accept-Datetime
+          in: header
+          required: false
+          description: |-
+            Requests the server to respond with the state of the resource at the specified
+            time.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/KeyValueFields'
+          style: form
+          explode: false
+        - name: tags
+          in: query
+          required: false
+          description: |-
+            A filter used to query by tags. Syntax reference:
+            https://aka.ms/azconfig/docs/restapirevisions
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /snapshots:
+    get:
+      operationId: getSnapshots
+      summary: Gets a list of key-value snapshots.
+      description: Gets a list of key-value snapshots.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: query
+          required: false
+          description: A filter for the name of the returned snapshots.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SnapshotFields'
+          style: form
+          explode: false
+        - name: status
+          in: query
+          required: false
+          description: Used to filter returned snapshots by their status property.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SnapshotStatus'
+          style: form
+          explode: false
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.snapshotset+json:
+              schema:
+                $ref: '#/components/schemas/SnapshotListResult'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/SnapshotListResult'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    head:
+      operationId: checkSnapshots
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: After
+          in: query
+          required: false
+          description: |-
+            Instructs the server to return elements that appear after the element referred
+            to by the specified token.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /snapshots/{name}:
+    get:
+      operationId: getSnapshot
+      summary: Gets a single key-value snapshot.
+      description: Gets a single key-value snapshot.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the snapshot.
+          schema:
+            type: string
+        - name: $Select
+          in: query
+          required: false
+          description: Used to select what fields are present in the returned resource(s).
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SnapshotFields'
+          style: form
+          explode: false
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+            Link:
+              required: false
+              description: Includes links to related resources.
+              schema:
+                type: string
+            x-ms-client-request-id:
+              required: false
+              description: An opaque, globally-unique, client-generated string identifier for the request.
+              schema:
+                $ref: '#/components/schemas/Azure.Core.uuid'
+          content:
+            application/vnd.microsoft.appconfig.snapshot+json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: createSnapshot
+      summary: Creates a key-value snapshot.
+      description: Creates a key-value snapshot.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the key-value snapshot to create.
+          schema:
+            type: string
+            maxLength: 256
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+            Link:
+              required: false
+              description: Includes links to related resources.
+              schema:
+                type: string
+            Operation-Location:
+              required: true
+              description: The location for monitoring the operation state.
+              schema:
+                type: string
+                format: uri
+          content:
+            application/vnd.microsoft.appconfig.snapshot+json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: The key-value snapshot to create.
+        required: true
+        content:
+          application/vnd.microsoft.appconfig.snapshot+json:
+            schema:
+              $ref: '#/components/schemas/Snapshot'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Snapshot'
+    patch:
+      operationId: updateSnapshot
+      summary: Updates the state of a key-value snapshot.
+      description: Updates the state of a key-value snapshot.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the key-value snapshot to update.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+            Link:
+              required: false
+              description: Includes links to related resources.
+              schema:
+                type: string
+          content:
+            application/vnd.microsoft.appconfig.snapshot+json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: The parameters used to update the snapshot.
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/SnapshotUpdateParameters'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapshotUpdateParameters'
+    head:
+      operationId: checkSnapshot
+      summary: Requests the headers and status of the given resource.
+      description: Requests the headers and status of the given resource.
+      parameters:
+        - $ref: '#/components/parameters/Azure.Core.Foundations.ApiVersionParameter'
+        - name: name
+          in: path
+          required: true
+          description: The name of the key-value snapshot to check.
+          schema:
+            type: string
+        - name: Sync-Token
+          in: header
+          required: false
+          description: Used to guarantee real-time consistency between requests.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag matches the
+            value provided.
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          description: |-
+            Used to perform an operation only if the targeted resource's etag does not
+            match the value provided.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Azure.Core.ClientRequestIdHeader'
+      responses:
+        '200':
+          description: The request has succeeded.
+          headers:
+            Sync-Token:
+              required: false
+              description: Used to guarantee real-time consistency between requests.
+              schema:
+                type: string
+            ETag:
+              required: false
+              description: A value representing the current state of the resource.
+              schema:
+                type: string
+            Link:
+              required: false
+              description: Includes links to related resources.
+              schema:
+                type: string
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+security:
+  - ApiKeyAuth: []
+  - OAuth2Auth:
+      - https://azconfig.io/.default
+components:
+  parameters:
+    Azure.Core.ClientRequestIdHeader:
+      name: x-ms-client-request-id
+      in: header
+      required: false
+      description: An opaque, globally-unique, client-generated string identifier for the request.
+      schema:
+        $ref: '#/components/schemas/Azure.Core.uuid'
+    Azure.Core.Foundations.ApiVersionParameter:
+      name: api-version
+      in: query
+      required: true
+      description: The API version to use for this operation.
+      schema:
+        type: string
+        minLength: 1
+  schemas:
+    Allocation:
+      type: object
+      properties:
+        default_when_disabled:
+          type: string
+          description: The default variant to use when disabled.
+        default_when_enabled:
+          type: string
+          description: The default variant to use when enabled.
+        percentile:
+          type: array
+          items:
+            $ref: '#/components/schemas/PercentileAllocation'
+          description: The field to allocate by percentile.
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAllocation'
+          description: The users who should al.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupAllocation'
+          description: The field to allocate by percentile.
+        seed:
+          type: string
+          description: The metadata to include on outbound telemetry
+      description: Feature Flag Allocation object.
+    Azure.Core.Foundations.Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: One of a server-defined set of error codes.
+        message:
+          type: string
+          description: A human-readable representation of the error.
+        target:
+          type: string
+          description: The target of the error.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/Azure.Core.Foundations.Error'
+          description: An array of details about specific errors that led to this reported error.
+        innererror:
+          allOf:
+            - $ref: '#/components/schemas/Azure.Core.Foundations.InnerError'
+          description: An object containing more specific information than the current object about the error.
+      description: The error object.
+    Azure.Core.Foundations.InnerError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: One of a server-defined set of error codes.
+        innererror:
+          allOf:
+            - $ref: '#/components/schemas/Azure.Core.Foundations.InnerError'
+          description: Inner error.
+      description: An object containing more specific information about the error. As per Microsoft One API guidelines - https://github.com/Microsoft/api-guidelines/blob/vNext/Guidelines.md#7102-error-condition-responses.
+    Azure.Core.uuid:
+      type: string
+      format: uuid
+      description: Universally Unique Identifier
+    CompositionType:
+      anyOf:
+        - type: string
+          enum:
+            - key
+            - key_label
+        - type: string
+      description: Composition types.
+    Conditions:
+      type: object
+      properties:
+        requirement_type:
+          type: string
+          description: The requirement type for the conditions.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlagFilter'
+          description: The filters that will conditionally enable or disable the flag.
+      description: Feature Flag Conditions object.
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the error.
+        title:
+          type: string
+          description: A brief summary of the error.
+        name:
+          type: string
+          description: The name of the parameter that resulted in the error.
+        detail:
+          type: string
+          description: A detailed description of the error.
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code that the error maps to.
+      description: Azure App Configuration error object.
+    FeatureFlag:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The name of the feature flag.
+          readOnly: true
+        label:
+          type: string
+          description: The label the feature flag belongs to.
+        enabled:
+          type: string
+          description: The enabled state of the feature flag.
+        conditions:
+          allOf:
+            - $ref: '#/components/schemas/Conditions'
+          description: The conditions of the feature flag.
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variant'
+          description: The variants of the feature flag.
+        allocation:
+          allOf:
+            - $ref: '#/components/schemas/Allocation'
+          description: The allocation of the feature flag.
+        telemetry:
+          allOf:
+            - $ref: '#/components/schemas/Telemetry'
+          description: The telemetry settings of the feature flag.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: The tags of the feature flag
+        created:
+          type: string
+          format: date-time
+          description: The time that the snapshot was created.
+          readOnly: true
+        last_modified:
+          type: string
+          format: date-time
+          description: A date representing the last time the feature flag was modified.
+        etag:
+          type: string
+          description: A value representing the current state of the resource.
+      description: A feature flag.
+    FeatureFlagFields:
+      anyOf:
+        - type: string
+          enum:
+            - name
+            - label
+            - enabled
+            - conditions
+            - variants
+            - allocation
+            - telemetry
+            - tags
+            - created
+            - last_modified
+            - etag
+        - type: string
+      description: Feature Flag fields.
+    FeatureFlagFilter:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The enabled state of the telemetry.
+        parameters:
+          type: object
+          additionalProperties: {}
+          description: The metadata to include on outbound telemetry
+      description: Feature Flag Filter object.
+    FeatureFlagListResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureFlag'
+          description: The collection value.
+        etag:
+          type: string
+          description: An identifier representing the returned state of the resource.
+        '@nextLink':
+          type: string
+          description: The URI that can be used to request the next set of paged results.
+      description: The result of a Feature Flag list request.
+    GroupAllocation:
+      type: object
+      required:
+        - variant
+        - groups
+      properties:
+        variant:
+          type: string
+          description: The variant to allocate these percentiles to.
+        groups:
+          type: array
+          items:
+            type: string
+          description: The groups to get this variant.
+      description: Feature Flag GroupAllocation object.
+    Key:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: The name of the key.
+          readOnly: true
+      description: Keys serve as identifiers for key-values and are used to store and retrieve corresponding values.
+    KeyListResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Key'
+          description: The collection value.
+        '@nextLink':
+          type: string
+          description: The URI that can be used to request the next set of paged results.
+      description: The result of a list request.
+    KeyValue:
+      type: object
+      required:
+        - key
+      properties:
+        key:
+          type: string
+          description: The key of the key-value.
+          readOnly: true
+        label:
+          type: string
+          description: The label the key-value belongs to.
+        content_type:
+          type: string
+          description: The content type of the value stored within the key-value.
+        value:
+          type: string
+          description: The value of the key-value.
+        last_modified:
+          type: string
+          format: date-time
+          description: A date representing the last time the key-value was modified.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: The tags of the key-value
+        locked:
+          type: boolean
+          description: Indicates whether the key-value is locked.
+        etag:
+          type: string
+          description: A value representing the current state of the resource.
+      description: A key-value pair representing application settings.
+    KeyValueFields:
+      anyOf:
+        - type: string
+          enum:
+            - key
+            - label
+            - content_type
+            - value
+            - last_modified
+            - tags
+            - locked
+            - etag
+        - type: string
+      description: Key-value fields.
+    KeyValueFilter:
+      type: object
+      required:
+        - key
+      properties:
+        key:
+          type: string
+          description: Filters key-values by their key field.
+        label:
+          type: string
+          description: Filters key-values by their label field.
+        tags:
+          type: array
+          items:
+            type: string
+          description: Filters key-values by their tags field.
+      description: |-
+        Enables filtering of key-values. Syntax reference:
+        https://aka.ms/azconfig/docs/restapisnapshots
+    KeyValueListResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValue'
+          description: The collection value.
+        etag:
+          type: string
+          description: An identifier representing the returned state of the resource.
+        '@nextLink':
+          type: string
+          description: The URI that can be used to request the next set of paged results.
+      description: The result of a list request.
+    Label:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the label.
+      description: Labels are used to group key-values.
+    LabelFields:
+      anyOf:
+        - type: string
+          enum:
+            - name
+        - type: string
+      description: Label fields.
+    LabelListResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
+          description: The collection value.
+        '@nextLink':
+          type: string
+          description: The URI that can be used to request the next set of paged results.
+      description: The result of a list request.
+    OperationDetails:
+      type: object
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: string
+          description: The unique id of the operation.
+        status:
+          allOf:
+            - $ref: '#/components/schemas/OperationState'
+          description: The current status of the operation
+        error:
+          allOf:
+            - $ref: '#/components/schemas/Azure.Core.Foundations.Error'
+          description: |-
+            An error, available when the status is `Failed`, describing why the operation
+            failed.
+      description: Details of a long running operation.
+    OperationState:
+      anyOf:
+        - type: string
+          enum:
+            - NotStarted
+            - Running
+            - Succeeded
+            - Failed
+            - Canceled
+        - type: string
+      description: Enum describing allowed operation states.
+    PercentileAllocation:
+      type: object
+      required:
+        - variant
+        - from
+        - to
+      properties:
+        variant:
+          type: string
+          description: The variant to allocate these percentiles to.
+        from:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+          description: The lower bounds for this percentile allocation.
+        to:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 100
+          description: The upper bounds for this percentile allocation.
+      description: Feature Flag PercentileAllocation object.
+    Snapshot:
+      type: object
+      required:
+        - name
+        - filters
+      properties:
+        name:
+          type: string
+          description: The name of the snapshot.
+          readOnly: true
+        status:
+          allOf:
+            - $ref: '#/components/schemas/SnapshotStatus'
+          description: The current status of the snapshot.
+          readOnly: true
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValueFilter'
+          minItems: 1
+          maxItems: 3
+          description: A list of filters used to filter the key-values included in the snapshot.
+        composition_type:
+          allOf:
+            - $ref: '#/components/schemas/CompositionType'
+          description: |-
+            The composition type describes how the key-values within the snapshot are
+            composed. The 'key' composition type ensures there are no two key-values
+            containing the same key. The 'key_label' composition type ensures there are no
+            two key-values containing the same key and label.
+        created:
+          type: string
+          format: date-time
+          description: The time that the snapshot was created.
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+          description: The time that the snapshot will expire.
+          readOnly: true
+        retention_period:
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 7776000
+          description: |-
+            The amount of time, in seconds, that a snapshot will remain in the archived
+            state before expiring. This property is only writable during the creation of a
+            snapshot. If not specified, the default lifetime of key-value revisions will be
+            used.
+        size:
+          type: integer
+          format: int64
+          description: The size in bytes of the snapshot.
+          readOnly: true
+        items_count:
+          type: integer
+          format: int64
+          description: The amount of key-values in the snapshot.
+          readOnly: true
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: The tags of the snapshot.
+        etag:
+          type: string
+          description: A value representing the current state of the snapshot.
+          readOnly: true
+      description: A snapshot is a named, immutable subset of an App Configuration store's key-values.
+    SnapshotFields:
+      anyOf:
+        - type: string
+          enum:
+            - name
+            - status
+            - filters
+            - composition_type
+            - created
+            - expires
+            - retention_period
+            - size
+            - items_count
+            - tags
+            - etag
+        - type: string
+      description: Snapshot fields.
+    SnapshotListResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Snapshot'
+          description: The collection value.
+        '@nextLink':
+          type: string
+          description: The URI that can be used to request the next set of paged results.
+      description: The result of a snapshot list request.
+    SnapshotStatus:
+      anyOf:
+        - type: string
+          enum:
+            - provisioning
+            - ready
+            - archived
+            - failed
+        - type: string
+      description: Snapshot status.
+    SnapshotUpdateParameters:
+      type: object
+      properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/SnapshotStatus'
+          description: The desired status of the snapshot.
+      description: Parameters used to update a snapshot.
+    Telemetry:
+      type: object
+      properties:
+        enabled:
+          type: string
+          description: The enabled state of the telemetry.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: The metadata to include on outbound telemetry
+      description: Feature Flag Telemetry object.
+    UserAllocation:
+      type: object
+      required:
+        - variant
+        - users
+      properties:
+        variant:
+          type: string
+          description: The variant to allocate these percentiles to.
+        users:
+          type: array
+          items:
+            type: string
+          description: The users to get this variant.
+      description: Feature Flag UserAllocation object.
+    Variant:
+      type: object
+      properties:
+        enabled:
+          type: string
+          description: The enabled state of the telemetry.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: The metadata to include on outbound telemetry
+      description: Feature Flag Variants object.
+    Versions:
+      type: string
+      enum:
+        - 2023-11-01
+      description: Service API versions
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Connection String
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://login.microsoftonline.com/common/oauth2/authorize
+          scopes:
+            https://azconfig.io/.default: ''
+servers:
+  - url: '{endpoint}'
+    description: App Configuration service endpoint
+    variables:
+      endpoint:
+        default: ''
